@@ -1,5 +1,7 @@
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 import os 
+from fastapi import Depends
+from typing import Annotated
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -15,3 +17,8 @@ engine = create_async_engine(DATABASE_URL, echo=True)
 async_session = async_sessionmaker(bind=engine, expire_on_commit=False)
 
 
+async def get_db():
+    async with async_session() as session:
+        yield session
+
+SessionDep = Annotated[AsyncSession,Depends(get_db)]
