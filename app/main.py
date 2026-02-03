@@ -8,30 +8,30 @@ app = FastAPI()
 
 @app.post("/notes",response_model=NoteOut)
 async def note_create(session: SessionDep,new_note: NoteCreate):
-    note = await notes_services.create_note(new_note["title"],new_note["content"])
+    note = await notes_services.create_note(session, new_note["title"], new_note["content"])
     return note
 
 @app.get("/notes/{note_id}",response_model=NoteOut)
 async def note_get(session: SessionDep,note_id: int):
-    note = await notes_services.get_note(note_id)
+    note = await notes_services.get_note(session, note_id)
     return note
 
 @app.get("/notes", response_model=List[NoteOut])
 async def note_get_all(session: SessionDep,):
-    notes = await notes_services.get_all_notes()
+    notes = await notes_services.get_all_notes(session)
     return notes
 
 @app.put("/notes/{note_id}",response_model=NoteOut)
 async def note_update(session: SessionDep,note_id: int, new_note: NoteUpdate):
-    note = await notes_services.update_note(note_id, new_note)
+    note = await notes_services.update_note(session, note_id, new_note)
     return note
 
 @app.patch("/notes/{note_id}")
 async def note_patch(session: SessionDep,note_id: int, new_note: NotePatch):
-    note = await notes_services.patch_note(note_id,new_note)
+    note = await notes_services.patch_note(session, note_id,new_note)
     return note
 
 @app.delete("/notes/{note_id}")
 async def note_delete(session: SessionDep,note_id: int):
-    response = await notes_services.delete_note(note_id)
+    response = await notes_services.delete_note(session, note_id)
     return response
